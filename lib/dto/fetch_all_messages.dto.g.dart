@@ -1,26 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'fetch_message_dto.dart';
+part of 'fetch_all_messages.dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-FetchMessageDto _$FetchMessageDtoFromJson(Map<String, dynamic> json) {
+FetchAllMessagesDto _$FetchAllMessagesDtoFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['senderId', 'receiverId', 'createdAt'],
+    requiredKeys: const ['senderId', 'receiverId'],
   );
-  return FetchMessageDto(
+  return FetchAllMessagesDto(
     senderId: json['senderId'] as String,
     receiverId: json['receiverId'] as String,
-    createdAt: DateTime.parse(json['createdAt'] as String),
   );
 }
 
-Map<String, dynamic> _$FetchMessageDtoToJson(FetchMessageDto instance) =>
+Map<String, dynamic> _$FetchAllMessagesDtoToJson(
+        FetchAllMessagesDto instance) =>
     <String, dynamic>{
       'senderId': instance.senderId,
       'receiverId': instance.receiverId,
-      'createdAt': instance.createdAt.toIso8601String(),
     };
