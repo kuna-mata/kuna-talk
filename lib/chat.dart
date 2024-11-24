@@ -38,15 +38,19 @@ class ChatState extends State<Chat> {
     });
   }
 
-  Future<void> loadMessagesInMinute({DateTime? createdAt}) async {
+  Future<void> loadMessagesInMinute(DateTime createdAt) async {
     try {
       final response = await fetchMessagesInMinute(
         FetchMessageInMinuteDto(
           senderId: person1,
           receiverId: person2,
-          createdAt: createdAt!,
+          createdAt: createdAt,
         ),
       );
+
+      List<String> ids = messages.map((item) => item.messageId).toList();
+
+      response.removeWhere((item) => ids.contains(item.messageId));
 
       setState(() {
         messages.addAll(response);
@@ -80,7 +84,7 @@ class ChatState extends State<Chat> {
         controller.clear();
       });
 
-      loadMessagesInMinute(createdAt: response.createdAt);
+      loadMessagesInMinute(response.createdAt);
     } catch (e) {
       throw Exception('sendMessage error: $e');
     }

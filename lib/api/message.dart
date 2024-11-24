@@ -8,6 +8,7 @@ import 'package:kuna_talk/models/message.dart';
 
 final Dio dio = DioClient().dio;
 
+// create
 Future<Message> createMessage(CreateMessageDto data) async {
   try {
     final response = await dio.post('/chat', data: data);
@@ -27,6 +28,7 @@ Future<Message> createMessage(CreateMessageDto data) async {
   }
 }
 
+// read
 Future<List<Message>> fetchAllMessages(FetchAllMessagesDto data) async {
   try {
     final response = await dio.get('/chat', queryParameters: {
