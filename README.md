@@ -1,4 +1,4 @@
-# flutter_application_1
+# kuna-talk
 
 A new Flutter project.
 
