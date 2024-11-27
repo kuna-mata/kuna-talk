@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:kuna_talk/api/message.dart';
 import 'package:kuna_talk/dto/create_message_dto.dart';
-import 'package:kuna_talk/dto/fetch_message_dto.dart';
+import 'package:kuna_talk/dto/fetch_all_messages.dto.dart';
+import 'package:kuna_talk/dto/fetch_messages_in_minute_dto.dart';
 import 'package:kuna_talk/models/message.dart';
 import 'package:kuna_talk/utils/util.dart';
 
@@ -17,25 +18,39 @@ class ChatState extends State<Chat> {
   final person1 = '4rwodzn1uuacfpq';
   final person2 = 'c4w28yb8dmgo4lz';
 
-  final TextEditingController controller = TextEditingController();
   List<Message> messages = [];
-  String? message;
+
+  final TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    loadMessages();
+    loadAllMessages();
   }
 
-  Future<void> loadMessages({DateTime? createdAt}) async {
+  Future<void> loadAllMessages() async {
+    final response = await fetchAllMessages(
+      FetchAllMessagesDto(senderId: person1, receiverId: person2),
+    );
+
+    setState(() {
+      messages = response;
+    });
+  }
+
+  Future<void> loadMessagesInMinute(DateTime createdAt) async {
     try {
-      final response = await fetchMessage(
-        FetchMessageDto(
+      final response = await fetchMessagesInMinute(
+        FetchMessageInMinuteDto(
           senderId: person1,
           receiverId: person2,
-          createdAt: createdAt!,
+          createdAt: createdAt,
         ),
       );
+
+      List<String> ids = messages.map((item) => item.messageId).toList();
+
+      response.removeWhere((item) => ids.contains(item.messageId));
 
       setState(() {
         messages.addAll(response);
@@ -46,6 +61,8 @@ class ChatState extends State<Chat> {
   }
 
   Future<void> sendMessage(String message) async {
+    final messageId = generateRandomId(15);
+
     if (message.isEmpty) {
       print('Message required');
       return;
@@ -54,7 +71,7 @@ class ChatState extends State<Chat> {
     final data = CreateMessageDto(
       senderId: person1,
       receiverId: person2,
-      messageId: generateRandomId(15),
+      messageId: messageId,
       message: message,
       updatedAt: DateTime.now(),
       createdAt: DateTime.now(),
@@ -64,12 +81,10 @@ class ChatState extends State<Chat> {
       final response = await createMessage(data);
 
       setState(() {
-        messages.add(response);
-        message = response.message;
         controller.clear();
       });
 
-      loadMessages(createdAt: response.createdAt);
+      loadMessagesInMinute(response.createdAt);
     } catch (e) {
       throw Exception('sendMessage error: $e');
     }
